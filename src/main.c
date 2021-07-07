@@ -16,7 +16,11 @@ int main () {
     yyparse(&symbols, &exp);
 
     sexpr_t res;
-    eval(&res, exp);
+    env_t env;
+    env_init(&env, NULL);
+    env_put(&env, SYM_NIL, nil);
+
+    eval(&res, exp, &env);
 
     print(&symbols, &res);
     printf("\n");

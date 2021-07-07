@@ -1,7 +1,7 @@
 #ifndef SYM_H
 #define SYM_H
 
-#define INIT_ENTRIES 8
+#define INIT_ENTRIES 32
 
 /* the symbol data type */
 typedef int sym_t;
@@ -13,10 +13,9 @@ typedef struct {
 } symbols_t;
 
 /* existing symbols */
-#define SYM_QUOTE 0
-#define SYM_EVAL 1
-#define SYM_IF 2
-#define SYM_PLUS 3
+enum base_symbols {
+    SYM_QUOTE, SYM_EVAL, SYM_IF, SYM_PLUS, SYM_CONS, SYM_CAR, SYM_CDR, SYM_LAMBDA, SYM_NIL
+};
 
 void initsymbols (symbols_t* symbols);
 sym_t getsym (symbols_t* symbols, const char* string);

@@ -52,8 +52,15 @@ sexpr_t* sexpr_alloc ();
 #define IS_DOUBLE(sexpr) ((sexpr)->type == S_ATOM && (sexpr)->atom.type == A_DOUBLE)
 #define IS_STRING(sexpr) ((sexpr)->type == S_ATOM && (sexpr)->atom.type == A_STRING)
 #define IS_NIL(sexpr) ((sexpr)->type == S_ATOM && (sexpr)->atom.type == A_NIL)
+
 #define CAR(sexpr) ((sexpr)->cons.car)
 #define CDR(sexpr) ((sexpr)->cons.cdr)
+#define CADR(sexpr) (CAR(CDR((sexpr))))
+#define CDDR(sexpr) (CDR(CDR(sexpr)))
 #define INTEGER(sexpr) ((sexpr)->atom.i)
+#define SYMBOL(sexpr) ((sexpr)->atom.sym)
+
+#define MK_INTEGER(out, ival) {(out)->type = S_ATOM; (out)->atom.type = A_INTEGER; (out)->atom.i = (ival);}
+#define MK_CONS(out, _car, _cdr) {(out)->type = S_CONS; (out)->cons.car = (_car); (out)->cons.cdr = (_cdr);}
 
 #endif

@@ -6,12 +6,17 @@ void initsymbols (symbols_t* symbols) {
     symbols->array = (char **) malloc (INIT_ENTRIES * sizeof(char*));
     symbols->total = INIT_ENTRIES;
 
-    symbols->array[0] = "quote";
-    symbols->array[1] = "eval";
-    symbols->array[2] = "if";
-    symbols->array[3] = "+";
-
-    symbols->used  = 4;
+    symbols->array[SYM_QUOTE] = "quote";
+    symbols->array[SYM_EVAL] = "eval";
+    symbols->array[SYM_IF] = "if";
+    symbols->array[SYM_PLUS] = "+";
+    symbols->array[SYM_CONS] = "cons";
+    symbols->array[SYM_CAR] = "car";
+    symbols->array[SYM_CDR] = "cdr";
+    symbols->array[SYM_LAMBDA] = "lambda";
+    symbols->array[SYM_NIL] = "nil";
+    
+    symbols->used  = 9;
 }
 
 sym_t getsym (symbols_t* symbols, const char* string) {
