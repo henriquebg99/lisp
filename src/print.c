@@ -6,6 +6,7 @@ void print (symbols_t* symbols, sexpr_t* e) {
         switch (e->atom.type) {
         case A_INTEGER: printf("%d", e->atom.i); break;
         case A_SYMBOL: printf("%s", getname(symbols, e->atom.sym)); break;
+        case A_BOOL: printf("%s", IS_TRUE(e) ? "t" : "f"); break;
         default: break;
         }
     } else if (IS_CONS(e)) {

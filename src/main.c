@@ -19,6 +19,8 @@ int main () {
     env_t env;
     env_init(&env, NULL);
     env_put(&env, SYM_NIL, nil);
+    env_put(&env, SYM_T, t);
+    env_put(&env, SYM_F, f);
 
     eval(&res, exp, &env);
 

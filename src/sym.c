@@ -10,13 +10,18 @@ void initsymbols (symbols_t* symbols) {
     symbols->array[SYM_EVAL] = "eval";
     symbols->array[SYM_IF] = "if";
     symbols->array[SYM_PLUS] = "+";
+    symbols->array[SYM_MINUS] = "-";
+    symbols->array[SYM_EQ] = "=";
     symbols->array[SYM_CONS] = "cons";
     symbols->array[SYM_CAR] = "car";
     symbols->array[SYM_CDR] = "cdr";
     symbols->array[SYM_LAMBDA] = "lambda";
     symbols->array[SYM_NIL] = "nil";
+    symbols->array[SYM_SELF] = "self";
+    symbols->array[SYM_T] = "t";
+    symbols->array[SYM_F] = "f";
     
-    symbols->used  = 9;
+    symbols->used  = 14;
 }
 
 sym_t getsym (symbols_t* symbols, const char* string) {
