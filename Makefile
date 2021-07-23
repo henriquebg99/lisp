@@ -4,7 +4,7 @@ C_FLAGS = -g
 LIB_FLAGS = -Isrc -I.
 
 all: $(OBJ_FILES)
-	gcc $(OBJ_FILES) -o lisp
+	gcc $(OBJ_FILES) $(C_FLAGS) -o lisp
 
 src/lex.yy.c: src/lexer.l
 	cd src; flex lexer.l

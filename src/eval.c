@@ -1,4 +1,5 @@
 #include "eval.h"
+#include <stdlib.h>
 
 void eval_plus (sexpr_t* out, sexpr_t* in, env_t* env) {
     sexpr_t *arg1 = CADR(in), *arg2;
@@ -18,6 +19,46 @@ void eval_plus (sexpr_t* out, sexpr_t* in, env_t* env) {
     }
 
     MK_INTEGER(out, INTEGER(&v1) + INTEGER(&v2));
+}
+
+void eval_times (sexpr_t* out, sexpr_t* in, env_t* env) {
+    sexpr_t *arg1 = CADR(in), *arg2;
+    sexpr_t v1, v2;
+
+    if (!IS_CONS(CDR(CDR(in)))) {
+        // error;
+    }
+
+    arg2 = CAR(CDR(CDR(in)));
+
+    eval(&v1, arg1, env);
+    eval(&v2, arg2, env);
+
+    if (!(IS_INTEGER(&v1) && IS_INTEGER(&v2))) {
+        // error;
+    }
+
+    MK_INTEGER(out, INTEGER(&v1) * INTEGER(&v2));
+}
+
+void eval_minus (sexpr_t* out, sexpr_t* in, env_t* env) {
+    sexpr_t *arg1 = CADR(in), *arg2;
+    sexpr_t v1, v2;
+
+    if (!IS_CONS(CDR(CDR(in)))) {
+        // error;
+    }
+
+    arg2 = CAR(CDR(CDR(in)));
+
+    eval(&v1, arg1, env);
+    eval(&v2, arg2, env);
+
+    if (!(IS_INTEGER(&v1) && IS_INTEGER(&v2))) {
+        // error;
+    }
+
+    MK_INTEGER(out, INTEGER(&v1) - INTEGER(&v2));
 }
 
 void eval_eq (sexpr_t* out, sexpr_t* in, env_t* env) {
@@ -81,9 +122,36 @@ void eval_if (sexpr_t* out, sexpr_t* in, env_t* env) {
     }
 }
 
+void eval_function_call (sexpr_t* out, sexpr_t* lambda, sexpr_t* args, env_t* env) {
+    sexpr_t *params = CADR(lambda);
+    sexpr_t *body = CAR(CDDR(lambda));
+
+    env_t new_env;
+    env_init(&new_env, env);
+
+    sexpr_t *next_par = params, *next_arg = args;
+
+    while (!IS_NIL(next_par) && !IS_NIL(next_arg)) {
+        if (!IS_CONS(next_par) || !IS_CONS(next_arg)) {
+            // error
+        } else {
+            // eval arguments; TODO lazy eval
+            sexpr_t arg_val;
+            eval(&arg_val, CAR(next_arg), env);
+            env_put(&new_env, SYMBOL(CAR(next_par)), arg_val);
+        }
+
+        next_par = CDR(next_par);
+        next_arg = CDR(next_arg);
+    }
+    env_put(&new_env, SYM_SELF, *lambda); // TODO avoid parameter named self
+
+    eval(out, body, &new_env);
+}
+
 /* example  ((lambda (x) (+ x 1)) 2)*/
 void eval_lambda_call (sexpr_t* out, sexpr_t* in, env_t* env) {
-    sexpr_t *lambda = CAR(in);
+    /*sexpr_t *lambda = CAR(in);
     sexpr_t *params = CADR(lambda);
     sexpr_t *args = CDR(in);
     sexpr_t *body = CAR(CDR(CDR(CAR(in))));
@@ -108,7 +176,18 @@ void eval_lambda_call (sexpr_t* out, sexpr_t* in, env_t* env) {
     }
     env_put(&new_env, SYM_SELF, *lambda); // TODO avoid parameter named self
 
-    eval(out, body, &new_env);
+    eval(out, body, &new_env);*/
+    eval_function_call(out, CAR(in), CDR(in), env);
+}
+
+void eval_sym_call (sexpr_t* out, sexpr_t* in, env_t* env) {
+    sexpr_t* lambda = env_get(env,  SYMBOL(CAR(in)));
+
+    if (lambda != NULL) {
+        eval_function_call(out, lambda, CDR(in), env);
+    } else {
+        // error
+    }
 }
 
 void eval (sexpr_t* out, sexpr_t* in, env_t* env) {
@@ -134,6 +213,8 @@ void eval (sexpr_t* out, sexpr_t* in, env_t* env) {
                 switch (SYMBOL(&car_val)) {
                     case SYM_QUOTE: *out = *(CADR(in)); break; //check that cdr is a cons!
                     case SYM_PLUS: eval_plus(out, in, env); break;
+                    case SYM_MINUS: eval_minus(out, in, env); break;
+                    case SYM_TIMES: eval_times(out, in, env); break;
                     case SYM_IF: eval_if(out, in, env); break;
                     case SYM_EQ: eval_eq(out, in, env); break;
                     case SYM_EVAL: eval(&aux, CADR(in), env); eval(out, &aux, env); break;
@@ -141,7 +222,7 @@ void eval (sexpr_t* out, sexpr_t* in, env_t* env) {
                     case SYM_CAR:  eval(&aux, CADR(in), env); *out = *(CAR(&aux)); break; // check
                     case SYM_CDR:  eval(&aux, CADR(in), env); *out = *(CDR(&aux)); break; // check
                     case SYM_LAMBDA: *out = *in; break;
-                    default: break;
+                    default: eval_sym_call(out, in, env); break;
                 }   
             } else {
                 // error;

@@ -14,8 +14,8 @@ typedef struct {
 
 /* existing symbols */
 enum base_symbols {
-    SYM_QUOTE, SYM_EVAL, SYM_IF, SYM_PLUS, SYM_MINUS, 
-    SYM_EQ, SYM_CONS, SYM_CAR, SYM_CDR, SYM_LAMBDA, 
+    SYM_QUOTE, SYM_EVAL, SYM_IF, SYM_PLUS, SYM_MINUS, SYM_TIMES,
+    SYM_EQ, SYM_CONS, SYM_CAR, SYM_CDR, SYM_LAMBDA,
     SYM_NIL, SYM_SELF, SYM_T, SYM_F
 };
 
