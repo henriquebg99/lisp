@@ -79,7 +79,9 @@ void eval_eq (sexpr_t* out, sexpr_t* in, env_t* env) {
             MK_TRUE(out);
         } else if (IS_ATOM(&v1) && (
                     (IS_INTEGER(&v1) && INTEGER(&v1) == INTEGER(&v2)) ||
-                    (IS_SYMBOL(&v1) && SYMBOL(&v1) == SYMBOL(&v2)))) {
+                    (IS_SYMBOL(&v1) && SYMBOL(&v1) == SYMBOL(&v2))    ||
+                    (IS_NIL(&v1) && IS_NIL(&v2))                      ||
+                    (IS_BOOL(&v1) && IS_TRUE(&v1) == IS_TRUE(&v2))    )) {
             MK_TRUE(out);
         } else
             MK_FALSE(out);
@@ -151,32 +153,6 @@ void eval_function_call (sexpr_t* out, sexpr_t* lambda, sexpr_t* args, env_t* en
 
 /* example  ((lambda (x) (+ x 1)) 2)*/
 void eval_lambda_call (sexpr_t* out, sexpr_t* in, env_t* env) {
-    /*sexpr_t *lambda = CAR(in);
-    sexpr_t *params = CADR(lambda);
-    sexpr_t *args = CDR(in);
-    sexpr_t *body = CAR(CDR(CDR(CAR(in))));
-
-    env_t new_env;
-    env_init(&new_env, env);
-
-    sexpr_t *next_par = params, *next_arg = args;
-
-    while (!IS_NIL(next_par) && !IS_NIL(next_arg)) {
-        if (!IS_CONS(next_par) || !IS_CONS(next_arg)) {
-            // error
-        } else {
-            // eval arguments; TODO lazy eval
-            sexpr_t arg_val;
-            eval(&arg_val, CAR(next_arg), env);
-            env_put(&new_env, SYMBOL(CAR(next_par)), arg_val);
-        }
-
-        next_par = CDR(next_par);
-        next_arg = CDR(next_arg);
-    }
-    env_put(&new_env, SYM_SELF, *lambda); // TODO avoid parameter named self
-
-    eval(out, body, &new_env);*/
     eval_function_call(out, CAR(in), CDR(in), env);
 }
 

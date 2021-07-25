@@ -14,12 +14,14 @@ void yyerror(symbols_t* symbols, sexpr_t** retval, const char* message) {
 %union { 
     int i; 
     double d;
+    char* str;
     sexpr_t* e;
 }
 
 %token<i> tINTEGER
 %token<i> tSYMBOL
 %token<d> tDOUBLE
+%token<str> tSTRING
 %type<e> sexpr
 %type<e> atom
 %type<e> list
@@ -37,6 +39,7 @@ sexpr   : atom              {{ $$ = $1; }}
 atom    : tINTEGER          {{ $$ = sexpr_alloc(); $$->type = S_ATOM; $$->atom.type = A_INTEGER; $$->atom.i = $1; }}
         | tSYMBOL           {{ $$ = sexpr_alloc(); $$->type = S_ATOM; $$->atom.type = A_SYMBOL;  $$->atom.sym = $1; }}
         | tDOUBLE           {{ $$ = sexpr_alloc(); $$->type = S_ATOM; $$->atom.type = A_DOUBLE;  $$->atom.d = $1; }}
+        | tSTRING           {{ $$ = sexpr_alloc(); $$->type = S_ATOM; $$->atom.type = A_STRING;  $$->atom.str = $1; }}
         ;
 
 list    : sexpr list        {{ $$ = sexpr_alloc(); $$->type = S_CONS; $$->cons.car = $1; $$->cons.cdr = $2; }}
