@@ -30,7 +30,7 @@ void yyerror(symbols_t* symbols, sexpr_t** retval, const char* message) {
 %start start
 %%
 
-start   : sexpr '\n'            {{ *retval = $1; }}
+start   : sexpr             {{ *retval = $1; YYACCEPT;}}
 
 sexpr   : atom              {{ $$ = $1; }}
         | '(' list ')'      {{ $$ = $2; }}

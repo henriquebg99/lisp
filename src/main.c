@@ -10,10 +10,9 @@
 int main () {
     sexpr_t* exp;
     symbols_t symbols;
+    int ret;
 
     initsymbols(&symbols);
-
-    yyparse(&symbols, &exp);
 
     sexpr_t res;
     env_t env;
@@ -22,9 +21,14 @@ int main () {
     env_put(&env, SYM_T, t);
     env_put(&env, SYM_F, f);
 
-    eval(&res, exp, &env);
+    do {
+        printf(">> ");
+        ret = yyparse(&symbols, &exp);
+        eval(&res, exp, &env);
+        print(&symbols, &res);
+        printf("\n");
+    } while (!ret);
 
-    print(&symbols, &res);
     printf("\n");
 
     //freesymbols(&symbols);
