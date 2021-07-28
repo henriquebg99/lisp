@@ -21,8 +21,9 @@ void initsymbols (symbols_t* symbols) {
     symbols->array[SYM_T] = "t";
     symbols->array[SYM_F] = "f";
     symbols->array[SYM_TIMES] = "*";
+    symbols->array[SYM_DEF] = "def";
     
-    symbols->used  = 15;
+    symbols->used  = 16;
 }
 
 sym_t getsym (symbols_t* symbols, const char* string) {

@@ -157,13 +157,25 @@ void eval_lambda_call (sexpr_t* out, sexpr_t* in, env_t* env) {
 }
 
 void eval_sym_call (sexpr_t* out, sexpr_t* in, env_t* env) {
-    sexpr_t* lambda = env_get(env,  SYMBOL(CAR(in)));
+    sexpr_t* lambda = env_get(env, SYMBOL(CAR(in)));
 
     if (lambda != NULL) {
         eval_function_call(out, lambda, CDR(in), env);
     } else {
         // error
     }
+}
+
+void eval_def (sexpr_t* out, sexpr_t* in, env_t* env) {
+    sexpr_t* name = CADR(in);
+    sexpr_t* expr = CAR(CDDR(in)); // TODO: check errors
+    sexpr_t val;
+
+    eval(&val, expr, env);
+
+    env_put(env, SYMBOL(name), val);
+
+    *out = val;
 }
 
 void eval (sexpr_t* out, sexpr_t* in, env_t* env) {
@@ -198,6 +210,7 @@ void eval (sexpr_t* out, sexpr_t* in, env_t* env) {
                     case SYM_CAR:  eval(&aux, CADR(in), env); *out = *(CAR(&aux)); break; // check
                     case SYM_CDR:  eval(&aux, CADR(in), env); *out = *(CDR(&aux)); break; // check
                     case SYM_LAMBDA: *out = *in; break;
+                    case SYM_DEF: eval_def(out, in, env); break;
                     default: eval_sym_call(out, in, env); break;
                 }   
             } else {
