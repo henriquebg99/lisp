@@ -21,13 +21,16 @@ int main () {
     env_put(&env, SYM_T, t);
     env_put(&env, SYM_F, f);
 
-    do {
-        printf(">> ");
-        ret = yyparse(&symbols, &exp);
+    printf(">> ");
+    ret = yyparse(&symbols, &exp);
+
+    while (!ret) {
         eval(&res, exp, &env);
         print(&symbols, &res);
         printf("\n");
-    } while (!ret);
+        printf(">> ");
+        ret = yyparse(&symbols, &exp);
+    }
 
     printf("\n");
 

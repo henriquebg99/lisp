@@ -19,8 +19,9 @@ ext [-=+*/%^{};><!?]
 
 
 [()]                                        { return *yytext; }
-[\n\t ]                                     ;
-
+[\t ]                                       ;
+[\n]                                        { printf("> "); }
+<<EOF>>                                     { return tEND_OF_FILE; }
 
 .                                           { fprintf(stderr, "Error: %c no recognized", *yytext);}
 %%

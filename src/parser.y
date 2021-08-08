@@ -18,6 +18,7 @@ void yyerror(symbols_t* symbols, sexpr_t** retval, const char* message) {
     sexpr_t* e;
 }
 
+%token tEND_OF_FILE
 %token<i> tINTEGER
 %token<i> tSYMBOL
 %token<d> tDOUBLE
@@ -36,12 +37,12 @@ sexpr   : atom              {{ $$ = $1; }}
         | '(' list ')'      {{ $$ = $2; }}
         ;
 
-atom    : tINTEGER          {{ $$ = sexpr_alloc(); $$->type = S_ATOM; $$->atom.type = A_INTEGER; $$->atom.i = $1; }}
-        | tSYMBOL           {{ $$ = sexpr_alloc(); $$->type = S_ATOM; $$->atom.type = A_SYMBOL;  $$->atom.sym = $1; }}
-        | tDOUBLE           {{ $$ = sexpr_alloc(); $$->type = S_ATOM; $$->atom.type = A_DOUBLE;  $$->atom.d = $1; }}
-        | tSTRING           {{ $$ = sexpr_alloc(); $$->type = S_ATOM; $$->atom.type = A_STRING;  $$->atom.str = $1; }}
+atom    : tINTEGER          {{ $$ = sexpr_alloc(); MK_INTEGER($$, $1);}}
+        | tSYMBOL           {{ $$ = sexpr_alloc(); MK_SYMBOL($$, $1);}}
+        | tDOUBLE           {{ $$ = sexpr_alloc(); MK_DOUBLE($$, $1);}}
+        | tSTRING           {{ $$ = sexpr_alloc(); MK_STRING($$, $1);}}
         ;
 
-list    : sexpr list        {{ $$ = sexpr_alloc(); $$->type = S_CONS; $$->cons.car = $1; $$->cons.cdr = $2; }}
+list    : sexpr list        {{ $$ = sexpr_alloc(); MK_CONS($$, $1, $2);}}
         |                   {{ $$ = &nil; }}
 %%

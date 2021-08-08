@@ -3,12 +3,12 @@
 
 void print (symbols_t* symbols, sexpr_t* e) {
     if (IS_ATOM(e)) {
-        switch (e->atom.type) {
-        case A_INTEGER: printf("%d", e->atom.i); break;
-        case A_DOUBLE: printf("%f", e->atom.d); break;
-        case A_STRING: printf("%s", e->atom.str); break;
-        case A_SYMBOL: printf("%s", getname(symbols, e->atom.sym)); break;
-        case A_BOOL: printf("%s", IS_TRUE(e) ? "t" : "f"); break;
+        switch (e->type) {
+        case S_INTEGER: printf("%d", INTEGER(e)); break;
+        case S_DOUBLE: printf("%f", DOUBLE(e)); break;
+        case S_STRING: printf("%s", STRING(e)); break;
+        case S_SYMBOL: printf("%s", getname(symbols, SYMBOL(e))); break;
+        case S_BOOL: printf("%s", IS_TRUE(e) ? "t" : "f"); break;
         default: break;
         }
     } else if (IS_CONS(e)) {
